@@ -11,44 +11,79 @@ namespace Baackup
     {
         #region Class Variables
 
-        // Config options
-        public static bool usercon;
-        public static string rconpass;
-        public static string rconhostname;
-        public static int rconport;
-        public static bool worldscontaineractive;
-        public static string worldscontainerpath;
-        public static bool backupmsgactive;
-        public static string backupmsg;
-        public static bool backupplugins;
-        public static bool backuplogs;
-        public static string backupcontainer;
-        public static bool usecustomtmpdir;
-        public static string customtmpdir;
-        public static string backupscustomidprefix;
-        public static bool compressbackups;
-        public static string platform;
-        public static bool backupfinishmsgactive;
-        public static string backupfinishmsg;
+        #region RCON
+
+        public static bool UseRCON;
+        public static string RCONPassword;
+        public static string RCONHostname;
+        public static int RCONPort;
+
+        #endregion
+
+        #region Worlds Container
+
+        public static bool WorldsContainerActive;
+        public static string WorldsContainerPath;
+
+        #endregion
+
+        #region Backup Messages
+
+        public static bool BackupMessageActive;
+        public static string BackupMessage;
+
+        public static bool BackupFinishedMessageActive;
+        public static string BackupFinishedMessage;
+
+        #endregion
+
+        #region Backup Toggles and Server Info
+
+        public static bool BackupPlugins;
+        public static bool BackupLogs;
+
+        public static string Platform;
+
+        #endregion
+
+        #region Directory and Saving Info
+
+        public static string BackupSaveContainer;
+        public static string BackupSavePrefix;
+
+        public static bool UseCustomTempDirectory;
+        public static string CustomTempDirectory;
+
+        public static bool CompressBackups;
+
+        #endregion
+
+        #region Other Stuff
 
         // Config path
-        public static string configfile = (Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\baackupconfig.xml");
+        public static string ConfigurationFilePath = (Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\baackupconfig.xml");
 
         // Execution path
-        public static string exepath;
+        public static string ExecutablePath;
 
         // TMP Backup path
-        public static string tmpsave;
-        public static string backupid;
+        public static string TemporarySaveLocation;
+        public static string BackupID;
 
-        #endregion Class Variables
+        #endregion
 
+        #endregion
+
+        /// <summary>
+        /// Entry Point
+        /// </summary>
+        /// <param name="args">Arugments from batch file</param>
         static void Main(string[] args)
         {
             Tools.Title("Baackup for Minecraft Server - Technoguyfication " + DateTime.Now.Year.ToString());
             try
             {
-                exepath = args[0] + '\\';
+                ExecutablePath = args[0] + '\\';
             }
             catch (Exception e)
             {
@@ -61,21 +96,35 @@ namespace Baackup
             Tools.Exit(1);
         }
 
+        /// <summary>
+        /// Starts the program fully
+        /// </summary>
         public void Start()
         {
             // Display title and intro text
             Tools.Print("Baackup for Minecraft Server - Technoguyfication " + DateTime.Now.Year.ToString());
-            Tools.Print("Running on path: " + exepath);
+            Tools.Print("Running on path: " + ExecutablePath);
 
             if (XMLConfig.ConfigExists())
             {
                 // Load program configuration from file
                 XMLConfig.LoadConfig();
                 Tools.NewBackupID();
-                if (usecustomtmpdir)
-                    tmpsave = customtmpdir + "\\" + backupid + "\\";
+
+                // Validate Configuration
+                if (!Tools.ValidateConfig())
+                {
+                    Tools.Log("Cannot continue with invalid configuration. Exiting program...", "Fatal");
+
+                    Tools.Wait(5);
+                    Tools.Exit(1);
+                }
+
+                // Tmp dir settings
+                if (UseCustomTempDirectory)
+                    TemporarySaveLocation = CustomTempDirectory + "\\" + BackupID + "\\";
                 else
-                    tmpsave = backupcontainer + "\\tmp\\" + backupid + "\\";
+                    TemporarySaveLocation = BackupSaveContainer + "\\tmp\\" + BackupID + "\\";
 
                 // Check that we are running in a server directory.
                 if (!IOStatus.FileExists("server.properties", true))
@@ -89,9 +138,10 @@ namespace Baackup
                     Tools.Log("Found server.properties!");
 
                     // Create tmp dir
-                    if (!IOStatus.FolderExists(Program.tmpsave, false))
-                        Directory.CreateDirectory(Program.tmpsave);
+                    if (!IOStatus.FolderExists(Program.TemporarySaveLocation, false))
+                        Directory.CreateDirectory(Program.TemporarySaveLocation);
 
+                    // Start Backup
                     Backup.StartBackup();
                 }
             }

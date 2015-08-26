@@ -13,7 +13,7 @@ namespace Baackup
         {
             if (isRelative)
             {
-                if (File.Exists(Program.exepath + filepath))
+                if (File.Exists(Program.ExecutablePath + filepath))
                     return true;
                 else
                     return false;
@@ -28,7 +28,7 @@ namespace Baackup
         {
             if (isRelative)
             {
-                if (Directory.Exists(Program.exepath + folderpath))
+                if (Directory.Exists(Program.ExecutablePath + folderpath))
                     return true;
                 else
                     return false;

@@ -10,6 +10,9 @@ namespace Baackup
 {
     public class Backup
     {
+        /// <summary>
+        /// Starts the backup with given config
+        /// </summary>
         public static void StartBackup()
         {
             // Backup start
@@ -19,8 +22,8 @@ namespace Baackup
             Tools.Wait(3);
 
             // Tell players backup is starting
-            if (Program.backupmsgactive)
-                RCON.Send(Program.backupmsg);
+            if (Program.BackupMessageActive)
+                RCON.Send(Program.BackupMessage);
 
             #region Copy Server Files
 
@@ -29,7 +32,7 @@ namespace Baackup
             foreach (string file in serverfiles) // Copy each file from the array
                 CopyFile(file);
 
-            if (Program.platform == "spigot")
+            if (Program.Platform == "spigot")
             {
                 string[] spigotfiles = { "spigot.yml", "bukkit.yml", "commands.yml", "help.yml", "permissions.yml" }; // Yay it's an array
 
@@ -37,7 +40,7 @@ namespace Baackup
                     CopyFile(file);
             }
 
-            if (Program.platform == "craftbukkit")
+            if (Program.Platform == "craftbukkit")
             {
                 string[] bukkitfiles = { "permissions.yml", "bukkit.yml", "commands.yml", "help.yml" }; // Yay it's another array
 
@@ -45,13 +48,13 @@ namespace Baackup
                     CopyFile(file);
             }
 
-            #endregion Copy Server Files
+            #endregion
 
             #region Worlds Container
 
-            if (!Program.worldscontaineractive)
+            if (!Program.WorldsContainerActive)
             {
-                string[] worlds = Directory.GetDirectories(Program.exepath);
+                string[] worlds = Directory.GetDirectories(Program.ExecutablePath);
 
                 foreach (string world in worlds)
                 {
@@ -61,24 +64,24 @@ namespace Baackup
             }
             else
             {
-                CopyFolder(Program.worldscontainerpath);
+                CopyFolder(Program.WorldsContainerPath);
             }
 
-            #endregion Worlds Container
+            #endregion
 
             #region Backup Plugins
 
-            if ((Program.platform == "spigot" || Program.platform == "craftbukkit") && Program.backupplugins)
+            if ((Program.Platform == "spigot" || Program.Platform == "craftbukkit") && Program.BackupPlugins)
                 CopyFolder("plugins");
 
-            #endregion Backup Plugins
+            #endregion
 
             #region Backup Logs
 
-            if (Program.backuplogs)
+            if (Program.BackupLogs)
                 CopyFolder("logs");
 
-            #endregion Backup Logs
+            #endregion
 
             // Copyfiles end
             RCON.Send("save-on");
@@ -87,37 +90,37 @@ namespace Baackup
             #region Compress / Move
 
             // Compress to final directory
-            if (Program.compressbackups)
+            if (Program.CompressBackups)
             {
                 Compress();
                 Tools.Log("Compression complete!");
             }
 
-            if (!Program.compressbackups)
+            if (!Program.CompressBackups)
             {
                 Tools.Log("No compression enabled, copying files");
 
                 // Set root for file save
-                string filesave = Program.backupcontainer + "\\" + Program.backupid;
+                string filesave = Program.BackupSaveContainer + "\\" + Program.BackupID;
 
                 //Now Create all of the directories
-                foreach (string dirPath in Directory.GetDirectories(Program.tmpsave, "*",
+                foreach (string dirPath in Directory.GetDirectories(Program.TemporarySaveLocation, "*",
                     SearchOption.AllDirectories))
-                    Directory.CreateDirectory(dirPath.Replace(Program.tmpsave, filesave + "\\"));
+                    Directory.CreateDirectory(dirPath.Replace(Program.TemporarySaveLocation, filesave + "\\"));
 
                 //Copy all the files & Replaces any files with the same name
-                foreach (string newPath in Directory.GetFiles(Program.tmpsave, "*.*",
+                foreach (string newPath in Directory.GetFiles(Program.TemporarySaveLocation, "*.*",
                     SearchOption.AllDirectories))
-                    File.Copy(newPath, newPath.Replace(Program.tmpsave, filesave + "\\"), true);
+                    File.Copy(newPath, newPath.Replace(Program.TemporarySaveLocation, filesave + "\\"), true);
             }
 
-            Directory.Delete(Program.tmpsave, true);
+            Directory.Delete(Program.TemporarySaveLocation, true);
 
-            #endregion Compress / Move
+            #endregion
 
             // Tell players backup is complete
-            if (Program.backupfinishmsgactive)
-                RCON.Send(Program.backupfinishmsg);
+            if (Program.BackupFinishedMessageActive)
+                RCON.Send(Program.BackupFinishedMessage);
 
             // Wait one second then terminate program
             Tools.Wait(1);
@@ -126,11 +129,15 @@ namespace Baackup
 
         #region Other Stuff
 
+        /// <summary>
+        /// Copies the selected file into the backup save directory.
+        /// </summary>
+        /// <param name="file">File Name</param>
         static void CopyFile(string file)
         {
             try
             {
-                File.Copy(Program.exepath + file, Program.tmpsave + file);
+                File.Copy(Program.ExecutablePath + file, Program.TemporarySaveLocation + file);
                 Tools.Log("Copied File:" + file);
             }
             catch (Exception e)
@@ -139,31 +146,35 @@ namespace Baackup
             }
         }
 
+        /// <summary>
+        /// Copies the selected folder into the backup save directory.
+        /// </summary>
+        /// <param name="folder">Folder Name</param>
         static void CopyFolder(string folder)
         {
-            folder = Program.exepath + new DirectoryInfo(folder).Name;
+            folder = Program.ExecutablePath + new DirectoryInfo(folder).Name;
 
             try
             {
                 Tools.Log("Copying Directory: " + folder);
 
                 //Create start directory
-                Directory.CreateDirectory(Program.tmpsave + new DirectoryInfo(folder).Name);
+                Directory.CreateDirectory(Program.TemporarySaveLocation + new DirectoryInfo(folder).Name);
 
                 //Create all of the directories
                 foreach (string dirPath in Directory.GetDirectories(folder, "*",
                     SearchOption.AllDirectories))
                 {
-                    Directory.CreateDirectory(dirPath.Replace(folder, Program.tmpsave + new DirectoryInfo(folder).Name));
-                    Tools.Log(folder + ": Create subdirectory with name " + dirPath.Replace(folder, Program.tmpsave + folder));
+                    Directory.CreateDirectory(dirPath.Replace(folder, Program.TemporarySaveLocation + new DirectoryInfo(folder).Name));
+                    Tools.Log(folder + ": Create subdirectory with name " + dirPath.Replace(folder, Program.TemporarySaveLocation + folder));
                 }
 
                 //Copy all the files & Replaces any files with the same name
                 foreach (string newPath in Directory.GetFiles(folder, "*.*",
                     SearchOption.AllDirectories))
                 {
-                    File.Copy(newPath, newPath.Replace(folder, Program.tmpsave + new DirectoryInfo(folder).Name), true);
-                    Tools.Log(folder + ": Create file with name " + Path.GetFileName(newPath.Replace(folder, Program.tmpsave + folder)) + " inside " + Path.GetDirectoryName(newPath.Replace(folder, Program.tmpsave + folder)));
+                    File.Copy(newPath, newPath.Replace(folder, Program.TemporarySaveLocation + new DirectoryInfo(folder).Name), true);
+                    Tools.Log(folder + ": Create file with name " + Path.GetFileName(newPath.Replace(folder, Program.TemporarySaveLocation + folder)) + " inside " + Path.GetDirectoryName(newPath.Replace(folder, Program.TemporarySaveLocation + folder)));
                 }
             }
             catch (Exception e)
@@ -172,14 +183,17 @@ namespace Baackup
             }
         }
 
+        /// <summary>
+        /// Compresses the temporary files into the backup save container.
+        /// </summary>
         static void Compress()
         {
             ProcessStartInfo p = new ProcessStartInfo(); // Set processinfo
 
-            p.FileName = Program.exepath + "7z.exe"; // Set filename
+            p.FileName = Program.ExecutablePath + "7z.exe"; // Set filename
 
             // EXAMPLE FOR BELOW: a -t7z "C:\Backups\backup-{ID}.7z" "C:\backups\tmp\backup-{ID}\"
-            p.Arguments = "a -t7z \"" + Program.backupcontainer + "\\" + Program.backupid + ".7z\" \"" + Program.tmpsave + "\\\""; // Set args
+            p.Arguments = "a -t7z \"" + Program.BackupSaveContainer + "\\" + Program.BackupID + ".7z\" \"" + Program.TemporarySaveLocation + "\\\""; // Set args
             p.WindowStyle = ProcessWindowStyle.Hidden; // Hde window
 
             Tools.Log("Compressing (This may take a long time)");
@@ -188,6 +202,6 @@ namespace Baackup
             x.WaitForExit();
         }
 
-        #endregion Other Stuff
+        #endregion
     }
 }

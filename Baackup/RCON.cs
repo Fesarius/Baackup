@@ -14,7 +14,7 @@ namespace Baackup
     {
         public static void Send(string command)
         {
-            if (Program.usercon)
+            if (Program.UseRCON)
             {
                 // We're using MCRCON by Tiiffi
 
@@ -22,9 +22,9 @@ namespace Baackup
 
                 p.WindowStyle = ProcessWindowStyle.Hidden; // Hide window
 
-                p.FileName = Program.exepath + "mcrcon.exe"; // Set the exec path
+                p.FileName = Program.ExecutablePath + "mcrcon.exe"; // Set the exec path
 
-                p.Arguments = "-s -p " + Program.rconpass + " -H " + Program.rconhostname + " -P " + Program.rconport + " \"" + command + '"'; // Arguments
+                p.Arguments = "-s -p " + Program.RCONPassword + " -H " + Program.RCONHostname + " -P " + Program.RCONPort + " \"" + command + '"'; // Arguments
 
                 try
                 {
