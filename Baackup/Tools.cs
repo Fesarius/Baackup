@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.IO;
 
 namespace Baackup
 {
@@ -24,10 +25,11 @@ namespace Baackup
                         throw new Exception("RCON Password Blank");
                     else
                         if (string.IsNullOrEmpty(Program.rconhostname))
-                            { } // do something
+                    { } // do something
                     else
                         if (string.IsNullOrEmpty(Program.rconport.ToString()))
-                        }
+                    { } // do something
+                }
 
                 #endregion
 
