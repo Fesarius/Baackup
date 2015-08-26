@@ -69,7 +69,7 @@ namespace Baackup
             }
         }
 
-        #endregion
+        #endregion Config Loading
 
         #region Other Stuff
 
@@ -81,6 +81,6 @@ namespace Baackup
                 return false;
         }
 
-        #endregion
+        #endregion Other Stuff
     }
 }

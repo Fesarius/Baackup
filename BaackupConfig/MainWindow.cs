@@ -38,7 +38,7 @@ namespace BaackupConfig
                 ModdedOptions.Enabled = false;
             }
 
-            #endregion
+            #endregion Modded Server Options
 
             #region Worlds Container
 
@@ -53,7 +53,7 @@ namespace BaackupConfig
                 WorldsContainerPathBrowseButton.Enabled = false;
             }
 
-            #endregion
+            #endregion Worlds Container
 
             #region RCON
 
@@ -74,7 +74,7 @@ namespace BaackupConfig
                 MessagesPanel.Enabled = false;
             }
 
-            #endregion
+            #endregion RCON
 
             #region Messages
 
@@ -88,7 +88,7 @@ namespace BaackupConfig
             else
                 BackupFinishedMessageTextBox.Enabled = false;
 
-            #endregion
+            #endregion Messages
 
             #region Temporary Save Location
 
@@ -97,7 +97,7 @@ namespace BaackupConfig
             else
                 TmpSaveLocationTextBox.Enabled = false;
 
-            #endregion
+            #endregion Temporary Save Location
         }
 
         #region Other Stuff
@@ -365,8 +365,8 @@ namespace BaackupConfig
             GUIUpdate();
         }
 
-        #endregion
+        #endregion Events
 
-        #endregion
+        #endregion Other Stuff
     }
 }

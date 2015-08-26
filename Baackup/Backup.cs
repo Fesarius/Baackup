@@ -45,7 +45,7 @@ namespace Baackup
                     CopyFile(file);
             }
 
-            #endregion
+            #endregion Copy Server Files
 
             #region Worlds Container
 
@@ -64,21 +64,21 @@ namespace Baackup
                 CopyFolder(Program.worldscontainerpath);
             }
 
-            #endregion
+            #endregion Worlds Container
 
             #region Backup Plugins
 
             if ((Program.platform == "spigot" || Program.platform == "craftbukkit") && Program.backupplugins)
                 CopyFolder("plugins");
 
-            #endregion
+            #endregion Backup Plugins
 
             #region Backup Logs
 
             if (Program.backuplogs)
                 CopyFolder("logs");
 
-            #endregion
+            #endregion Backup Logs
 
             // Copyfiles end
             RCON.Send("save-on");
@@ -113,7 +113,7 @@ namespace Baackup
 
             Directory.Delete(Program.tmpsave, true);
 
-            #endregion
+            #endregion Compress / Move
 
             // Tell players backup is complete
             if (Program.backupfinishmsgactive)
@@ -146,6 +146,7 @@ namespace Baackup
             try
             {
                 Tools.Log("Copying Directory: " + folder);
+
                 //Create start directory
                 Directory.CreateDirectory(Program.tmpsave + new DirectoryInfo(folder).Name);
 
@@ -187,6 +188,6 @@ namespace Baackup
             x.WaitForExit();
         }
 
-        #endregion
+        #endregion Other Stuff
     }
 }
