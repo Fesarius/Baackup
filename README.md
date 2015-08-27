@@ -16,4 +16,18 @@ A backup program for Minecraft servers, sponsored by sheep.
 5. Set it to run whenever you want. If you use the plugin *Essentials*, it has [an auto backup feature](http://wiki.ess3.net/wiki/Backup). If you don't use Essentials and **do not** have the RCON feature correctly configured, make sure you have something to automatically save and toggle autosave on your server, ***otherwise your backups could become corrupted!***
 6. Now just let the program do the work. If you ever need to restore from a backup just open or decompress the files, then pop them back in your server. The backups are stored as (prefix)_yyyy-mm-dd.hh-mm-ss--backup.
 
-#### As always, we're open to pull requests.
+
+## Todo List:
+
+- [x] Program Basics
+- [x] Config Read / Write / Generate
+- [x] Configuration Tool
+- [x] Backup file transfer
+- [x] Compression
+- [ ] Clean up dat code
+- [ ] Fix the crappy names of those variables in the Program() class.
+- [ ] More error handling
+- [ ] Better configuration file verification
+
+
+#### *As always, we're open to pull requests.*
