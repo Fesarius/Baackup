@@ -29,5 +29,13 @@ A backup program for Minecraft servers, sponsored by sheep.
 - [ ] More error handling
 - [ ] Better configuration file verification
 
+## Third Party Application Contributors
 
+***Thanks to [@Tiiffi](https://github.com/Tiiffi) for the mcrcon program!***
+
+ ***Thanks to Igor Palov and the [7-Zip](http://7-zip.org) Team!***
+<pre>
+
+
+</pre>
 #### *As always, we're open to pull requests.*
